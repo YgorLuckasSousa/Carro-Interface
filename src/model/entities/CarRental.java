@@ -1,6 +1,5 @@
 package model.entities;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public class CarRental {
@@ -8,6 +7,8 @@ public class CarRental {
     private LocalDateTime finish;
     private Vehicle vehicle;
     private Invoice invoice;
+
+
 
     public CarRental(LocalDateTime start, LocalDateTime finish, Vehicle vehicle) {
         this.start = start;

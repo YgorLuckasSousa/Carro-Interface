@@ -2,6 +2,8 @@ package application;
 
 import model.entities.CarRental;
 import model.entities.Vehicle;
+import model.services.BrazilTaxServices;
+import model.services.RentalService;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,23 +13,37 @@ import java.util.Scanner;
 public class Program {
     public static void main(String[] args) {
         Locale.setDefault(Locale.US);
-        Scanner leia = new Scanner(System.in);
+        Scanner sc = new Scanner(System.in);
 
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-
-        System.out.println("Entre com os dados do carro");
+        System.out.println("Entre com os dados do aluguel");
         System.out.print("Modelo do carro: ");
-        String model = leia.nextLine();
-        System.out.print("Retirada (dd/MM/yyyy hh:mm): ");
-        LocalDateTime start = LocalDateTime.parse(leia.nextLine(),fmt);
-        System.out.print("Retorno (dd/MM/yyyy hh:mm): ");
-        LocalDateTime finish = LocalDateTime.parse(leia.nextLine(),fmt);
+        String carModel = sc.nextLine();
+        System.out.print("Retirada (dd/MM/yyyy HH:mm): ");
+        LocalDateTime start = LocalDateTime.parse(sc.nextLine(), fmt);
+        System.out.print("Retorno (dd/MM/yyyy HH:mm): ");
+        LocalDateTime finish = LocalDateTime.parse(sc.nextLine(), fmt);
 
-        CarRental car = new CarRental(start, finish, new Vehicle(model));
+        CarRental cr = new CarRental(start, finish, new Vehicle(carModel));
+
+        System.out.print("Entre com o preço por hora: ");
+        double pricePerHour = sc.nextDouble();
+        System.out.print("Entre com o preço por dia: ");
+        double pricePerDay = sc.nextDouble();
+        RentalService rs = new RentalService(pricePerDay, pricePerHour, new BrazilTaxServices());
+
+        rs.processInvoice(cr);
+
+        System.out.println("FATURA:");
+        System.out.printf("Pagamento básico: %.2f%n", cr.getInvoice().getBasicPayment());
+        System.out.printf("Imposto: %.2f%n", cr.getInvoice().getTax());
+        System.out.printf("Pagamento total: %.2f", cr.getInvoice().totalPayment());
 
 
 
-        
-        leia.close();
+
+
+
+        sc.close();
     }
 }
